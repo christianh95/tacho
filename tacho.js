@@ -2,6 +2,7 @@ function tacho(elem, config){
 
     // Settings
     var max             = config.max || 100;
+    var min             = config.min || 0;
     var markInterval    = config.markInterval || 10;
     var bigMarkInterval = config.bigMarkInterval || 50;
     var redLinePoint    = config.redLinePoint || 0.825;
@@ -16,8 +17,8 @@ function tacho(elem, config){
     var minRad = Math.PI * 0.25;
     var maxRad = Math.PI * 1.75;
     var scaleRads = maxRad - minRad;
-    var curVal = 0;
-    var maxSeen = 0;
+    var curVal = min;
+    var maxSeen = min;
 
     //var logo = new Image();
     //logo.src = '/logo.png';
@@ -30,7 +31,7 @@ function tacho(elem, config){
     // Main draw loop
     var draw = function(){
 
-        var targetVal = parseInt(elem.dataset.val, 10);
+        var targetVal = parseFloat(elem.dataset.val);
         if (targetVal > maxSeen){
             maxSeen = targetVal;
         }
@@ -50,7 +51,7 @@ function tacho(elem, config){
         }
 
         // Calculate the current pointer position in radians
-        var curPos = ((curVal / max) * scaleRads) + minRad;
+        var curPos = (((curVal-min) / (max-min)) * scaleRads) + minRad;
 
         // Draw everything
         drawOuterRim(c);
@@ -83,10 +84,10 @@ function tacho(elem, config){
     }
 
     function drawMarkings(c){
-        for (var i = 0; i <= max; i += markInterval){
+        for (var i = min; i <= max; i += markInterval){
             c.save();
 
-            var pos = ((i / max) * scaleRads) + minRad;
+            var pos = (((i-min) / (max-min)) * scaleRads) + minRad;
             c.rotate(pos);
             c.beginPath();  
 
@@ -173,7 +174,7 @@ function tacho(elem, config){
         if (val > max){
             return;
         }
-        var pos = ((val / max) * scaleRads) + minRad;
+        var pos = (((val-min) / (max-min)) * scaleRads) + minRad;
 
         c.save();
 
